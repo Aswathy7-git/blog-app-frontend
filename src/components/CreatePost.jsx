@@ -1,6 +1,40 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useState } from 'react'
 
 const CreatePost = () => {
+
+    const [input,setInput] = useState(
+        {"Message":"","userId": sessionStorage.getItem("userId")}
+    )
+
+    const inputHandler=(event)=>{
+        setInput({...input,[event.target.name]:event.target.value})
+    }
+
+    const readValues=()=>{
+        console.log(input)
+
+        axios.post("http://localhost:3030/create",input,{
+            headers:{"token":sessionStorage.getItem("token"),"Content-Type":"application/json"}
+        }).then(
+            (response)=>{
+
+                   if (response.data.status=="success"){
+                    alert("posted successfully")
+                   } 
+                   else{
+                    alert("something went wrong!!!")
+                   }
+
+
+            }
+        ).catch(
+            (error)=>{console.log(error)}
+        )
+
+    }
+
+
   return (
     <div>
 
@@ -10,10 +44,10 @@ const CreatePost = () => {
                     <div className="row g-3">
                         <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
                             <label htmlFor="" className="form-label">Post a meassage</label>
-                            <input type="text" className="form-control" />
+                            <textarea name="Message" value={input.Message} className="form-control" onChange={inputHandler}></textarea>
                         </div>
                         <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
-                            <button className="btn btn-success">Post</button>
+                            <button onClick={readValues} className="btn btn-success">Post</button>
                         </div>
                     </div>
                 </div>
